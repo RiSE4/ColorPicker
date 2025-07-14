@@ -108,6 +108,176 @@ function drawHueSlider() {
     hueCtx.fillRect(0, 0, hueCanvas.width, hueCanvas.height);
 }
 
+function colorDistanceHSV(a, b) {
+    const hueDiff = Math.min(Math.abs(a.h - b.h), 360 - Math.abs(a.h - b.h)) / 180; // normalize to 0~1
+    const satDiff = a.s - b.s;
+    const valDiff = a.v - b.v;
+
+    // Hueを一番重視、次に明度、最後に彩度
+    const weightH = 2.0;
+    const weightS = 1.0;
+    const weightV = 1.5;
+
+    return Math.sqrt(
+        weightH * hueDiff * hueDiff +
+        weightS * satDiff * satDiff +
+        weightV * valDiff * valDiff
+    );
+}
+
+function generateUniqueColors(hue, count = 5, minDistance = 0.2) {
+    const results = [];
+    let attempts = 0;
+    const maxAttempts = 20 * count;  // 例えば5色なら最大100回まで挑戦
+
+    while (results.length < count && attempts < maxAttempts) {
+        attempts++;
+
+        const s = Math.random() * 0.5 + 0.5;
+        const v = Math.random() * 0.3 + 0.7;
+        const newColor = { h: hue, s, v };
+
+        const tooClose = results.some(existing =>
+            colorDistanceHSV(newColor, existing) < minDistance
+        );
+
+        if (!tooClose) {
+            results.push(newColor);
+        }
+    }
+
+    if (results.length < count) {
+        console.warn(`Only ${results.length} unique colors could be generated.`);
+    }
+
+    return results;
+}
+
+document.querySelectorAll('#rainbowButtons button').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const hue = parseFloat(btn.dataset.hue);
+        currentHue = hue;
+
+        drawSVCanvas(hue);
+        updateHueIndicator(hue);
+
+        const colors = generateUniqueColors(hue, 5, 0.2);
+        colors.forEach(({ h, s, v }) => {
+            const hex = updateColorPreview(h, s, v);
+            addColorToPalette(hex);
+        });
+    });
+});
+
+function sortPaletteByLab() {
+    const boxes = Array.from(document.querySelectorAll('.color-box'));
+
+    const labBoxes = boxes.map(box => {
+        const hex = box.querySelector('.hex-label')?.textContent;
+        const rgb = hexToRgb(hex);
+        const xyz = rgbToXyz(rgb);
+        const lab = xyzToLab(xyz);
+        return { box, lab, hex };
+    });
+
+    const sorted = [];
+    const used = new Set();
+    let current = labBoxes[0];
+    sorted.push(current);
+    used.add(current);
+
+    while (sorted.length < labBoxes.length) {
+        let minDist = Infinity;
+        let next = null;
+
+        for (const candidate of labBoxes) {
+            if (used.has(candidate)) continue;
+            const dist = deltaE(current.lab, candidate.lab);
+            if (dist < minDist) {
+                minDist = dist;
+                next = candidate;
+            }
+        }
+
+        if (next) {
+            sorted.push(next);
+            used.add(next);
+            current = next;
+        }
+    }
+
+    const palette = document.getElementById('palette');
+    palette.innerHTML = '';
+    sorted.forEach(({ box }) => palette.appendChild(box));
+
+    // 🧠 ここで保存する
+    const sortedHexList = sorted.map(item => item.hex);
+    saveSortedPaletteToStorage(sortedHexList);
+}
+
+function saveSortedPaletteToStorage(hexList) {
+    if (!Array.isArray(hexList)) {
+        console.error('Invalid hexList:', hexList);
+        return;
+    }
+    // hexList 内の全要素が文字列かチェック
+    if (hexList.some(h => typeof h !== 'string')) {
+        console.error('hexList contains non-string:', hexList);
+        return;
+    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(hexList));
+}
+
+function hexToRgb(hex) {
+    const bigint = parseInt(hex.slice(1), 16);
+    return {
+        r: (bigint >> 16) & 255,
+        g: (bigint >> 8) & 255,
+        b: bigint & 255
+    };
+}
+
+function rgbToXyz({ r, g, b }) {
+    // 0-255 → 0-1
+    r /= 255; g /= 255; b /= 255;
+
+    // ガンマ補正
+    r = r > 0.04045 ? ((r + 0.055) / 1.055) ** 2.4 : r / 12.92;
+    g = g > 0.04045 ? ((g + 0.055) / 1.055) ** 2.4 : g / 12.92;
+    b = b > 0.04045 ? ((b + 0.055) / 1.055) ** 2.4 : b / 12.92;
+
+    // sRGB → XYZ (D65)
+    return {
+        x: r * 0.4124 + g * 0.3576 + b * 0.1805,
+        y: r * 0.2126 + g * 0.7152 + b * 0.0722,
+        z: r * 0.0193 + g * 0.1192 + b * 0.9505
+    };
+}
+
+function xyzToLab({ x, y, z }) {
+    // D65白色点
+    const Xn = 0.95047, Yn = 1.00000, Zn = 1.08883;
+
+    x /= Xn; y /= Yn; z /= Zn;
+
+    const f = t => (t > 0.008856) ? Math.cbrt(t) : (7.787 * t + 16 / 116);
+
+    return {
+        L: 116 * f(y) - 16,
+        a: 500 * (f(x) - f(y)),
+        b: 200 * (f(y) - f(z))
+    };
+}
+function deltaE(lab1, lab2) {
+    const dL = lab1.L - lab2.L;
+    const da = lab1.a - lab2.a;
+    const db = lab1.b - lab2.b;
+    return Math.sqrt(dL * dL + da * da + db * db);
+}
+
+// document.getElementById('sortPaletteBtn').addEventListener('click', sortPaletteByHSV);
+document.getElementById('sortPaletteLabBtn').addEventListener('click', sortPaletteByLab);
+
 function drawSVCanvas(hue) {
     const width = svCanvas.width;
     const height = svCanvas.height;
@@ -153,6 +323,7 @@ function addColorToPalette(hex, save = true) {
         navigator.clipboard.writeText(hex).then(() => {
             showCopyNotice(hex);
         });
+        updateInputs(currentHue, s, v, ...hsvToRgb(currentHue, s, v));
     });
 
     const deleteBtn = document.createElement('button');
