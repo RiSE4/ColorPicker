@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Color Picker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h1>Color Picker</h1>
+
+    <!-- SV ピッカー -->
+    <canvas id="svCanvas" width="700" height="300"></canvas>
+
+    <!-- Hue スライダー（＋つまみ） -->
+    <div id="hueWrapper">
+        <canvas id="hueCanvas" width="700" height="30"></canvas>
+        <div id="hueIndicator"></div>
+    </div>
+
+    <!-- プレビューとコード -->
+    <div id="pickedColor">
+        <div id="colorPreview" class="color-preview"></div>
+        <span id="hexValue">#FFFFFF</span>
+    </div>
+
+    <!-- 入力欄（RGB / HSV） -->
+    <div class="input-group">
+        <label>RGB:</label>
+        <input type="number" id="rInput" min="0" max="255">
+        <input type="number" id="gInput" min="0" max="255">
+        <input type="number" id="bInput" min="0" max="255">
+    </div>
+
+    <div class="input-group">
+        <label>HSV:</label>
+        <input type="number" id="hInput" min="0" max="360">
+        <input type="number" id="sInput" min="0" max="100">
+        <input type="number" id="vInput" min="0" max="100">
+    </div>
+
+    <button id="clearPaletteBtn">🧹パレットをクリア</button>
+    <div id="palette"></div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
