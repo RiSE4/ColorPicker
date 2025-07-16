@@ -1,4 +1,7 @@
 # COLOR PICKER
+GitHub pagesにて公開しています。<br>
+https://rise4.github.io/ColorPicker/
+<br><br>
 Chromium系ブラウザに対応しています。一応スマホでも動きます。
 # できること
 * キャンバスから取得した色をパレットに追加し、HSV/RGB/HEX の値を取得
