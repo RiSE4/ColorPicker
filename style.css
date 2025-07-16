@@ -188,19 +188,92 @@ canvas:hover {
     transform: translateX(-1px);
 }
 
-.input-group {
-    margin: 10px 0;
+.input-actions {
     display: flex;
+    gap: 10px;
     align-items: center;
-    gap: 6px;
+    margin-top: 8px;
+    margin-bottom: 16px;
 }
 
-.input-group input {
-    width: 60px;
-    padding: 4px;
+.action-btn:hover {
+    background-color: #27ae60;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.input-block {
+    margin: 16px 0;
+}
+
+.input-block label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 6px;
     font-size: 14px;
+    color: #333;
 }
 
-.input-group label {
-    min-width: 40px;
+.input-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.input-row input[type="number"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 60px;
+    padding: 10px 12px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-row input[type="number"]:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.4);
+    outline: none;
+}
+
+.action-btn,
+.copy-btn {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease, background-color 0.3s ease;
+    font-size: 16px;
+    width: 60px
+}
+
+.copy-btn i {
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* コピー後にエフェクト表示 */
+.copy-btn.copied-feedback {
+    background-color: #2ecc71;
+    box-shadow: 0 0 10px rgba(46, 204, 113, 0.7);
+}
+
+/* フェードアウト準備 */
+.copy-btn i.fade-out {
+    opacity: 0;
+    transform: scale(0.8);
+}
+
+.copy-btn:hover {
+    background: #2980b9;
+}
+
+.copy-btn.copied-feedback {
+    background-color: #2ecc71;
+    box-shadow: 0 0 10px rgba(46, 204, 113, 0.7);
 }
