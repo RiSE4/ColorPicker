@@ -1,5 +1,5 @@
 # COLOR PICKER
-GitHub pagesにて公開しています。<br>
+以下のリンクから、自由に使用することができます。<br>
 https://rise4.github.io/ColorPicker/
 <br><br>
 Chromium系ブラウザに対応しています。一応スマホでも動きます。

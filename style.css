@@ -21,6 +21,10 @@ footer {
 }
 
 a:visited {
+    color: #2ecc71;
+}
+
+a:link {
     color: skyblue;
 }
 
