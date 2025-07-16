@@ -238,22 +238,29 @@ document.getElementById('addRgbBtn').addEventListener('click', () => {
     const r = parseInt(rInput.value);
     const g = parseInt(gInput.value);
     const b = parseInt(bInput.value);
-    if (isNaN(r) || isNaN(g) || isNaN(b)) return;
-
+    if (isNaN(r) || isNaN(g) || isNaN(b)) {
+        animateErrorFeedback(document.getElementById('addRgbBtn'));
+        return;
+    }
     const [h, s, v] = rgbToHsv(r, g, b);
     currentHue = h;
     drawSVCanvas(h);
     updateHueIndicator(h);
     updateColorPreview(h, s, v);
+
     addColorToPalette(rgbToHex(r, g, b));
+    animateAddFeedback(document.getElementById('addRgbBtn'));
+
 });
 
 document.getElementById('addHsvBtn').addEventListener('click', () => {
     const h = parseFloat(hInput.value);
     const s = parseFloat(sInput.value) / 100;
     const v = parseFloat(vInput.value) / 100;
-    if (isNaN(h) || isNaN(s) || isNaN(v)) return;
-
+    if (isNaN(h) || isNaN(s) || isNaN(v)) {
+        animateErrorFeedback(document.getElementById('addHsvBtn'));
+        return;
+    }
     currentHue = h;
     drawSVCanvas(h);
     updateHueIndicator(h);
@@ -261,6 +268,7 @@ document.getElementById('addHsvBtn').addEventListener('click', () => {
 
     const [r, g, b] = hsvToRgb(h, s, v);
     addColorToPalette(rgbToHex(r, g, b));
+    animateAddFeedback(document.getElementById('addHsvBtn'));
 });
 
 document.getElementById('addRgbBtn').addEventListener('mouseenter', () => {
@@ -319,6 +327,46 @@ function animateCopyFeedback(button, iconSelector = 'i') {
         icon.classList.remove('fa-check', 'fade-out');
         icon.classList.add('fa-copy');
         button.classList.remove('copied-feedback');
+    }, 800);
+}
+
+function animateAddFeedback(button, iconSelector = 'i') {
+    const icon = button.querySelector(iconSelector);
+    if (!icon) return;
+
+    // アイコンをチェックに変更
+    icon.classList.remove('fa-plus');
+    icon.classList.add('fa-check');
+    button.classList.add('copied-feedback');
+
+    // 少ししてフェードアウト
+    setTimeout(() => icon.classList.add('fade-out'), 500);
+
+    // 元に戻す
+    setTimeout(() => {
+        icon.classList.remove('fa-check', 'fade-out');
+        icon.classList.add('fa-plus');
+        button.classList.remove('copied-feedback');
+    }, 800);
+}
+
+function animateErrorFeedback(button, iconSelector = 'i') {
+    const icon = button.querySelector(iconSelector);
+    if (!icon) return;
+
+    // バツアイコンに変更
+    icon.classList.remove('fa-plus');
+    icon.classList.add('fa-xmark');
+    button.classList.add('error-feedback');
+
+    // 少ししてフェードアウト
+    setTimeout(() => icon.classList.add('fade-out'), 500);
+
+    // 元に戻す
+    setTimeout(() => {
+        icon.classList.remove('fa-xmark', 'fade-out');
+        icon.classList.add('fa-plus');
+        button.classList.remove('error-feedback');
     }, 800);
 }
 
@@ -538,5 +586,29 @@ svCanvas.addEventListener('mousemove', e => {
 });
 
 function updateSVIndicatorFromHSV(h, s, v) {
-// 必要に応じてキャンバス上にインジケータを描く処理を追加
-// 例: crosshairなど
+    // 必要に応じてキャンバス上にインジケータを描く処理を追加
+    // 例: crosshairなど
+}
+
+/* ===== RGB/HSV 入力値補正 ===== */
+
+document.querySelectorAll('input[type="number"]').forEach(input => {
+    input.addEventListener('input', () => {
+        const min = parseFloat(input.min);
+        const max = parseFloat(input.max);
+        let value = parseFloat(input.value);
+
+        if (isNaN(value)) return;
+
+        // 最小・最大値で制限
+        if (value < min) input.value = min;
+        if (value > max) input.value = max;
+
+        //プレビュー用の再計算
+        if ([rInput, gInput, bInput].includes(input)) {
+            updateFromRGBInputs();
+        } else if ([hInput, sInput, vInput].includes(input)) {
+            updateFromHSVInputs();
+        }
+    });
+});
