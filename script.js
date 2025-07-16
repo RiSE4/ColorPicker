@@ -1,4 +1,4 @@
-/* ===== 色変換ユーティリティ関数 ===== */
+/* ===== ユーティリティ関数 ===== */
 
 function hsvToRgb(h, s, v) {
     let f = (n, k = (n + h / 60) % 6) =>
@@ -39,6 +39,15 @@ function hexToRgb(hex) {
         g: (bigint >> 8) & 255,
         b: bigint & 255
     };
+}
+
+/**
+ * 値が空白かどうかをチェックする
+ * @param {*} value 
+ * @returns 
+ */
+function isBlank(value) {
+    return value === undefined || value === null || String(value).trim() === '';
 }
 
 /* ===== DOM取得 ===== */
@@ -237,7 +246,7 @@ document.getElementById('addRgbBtn').addEventListener('click', () => {
     const g = parseInt(gInput.value);
     const b = parseInt(bInput.value);
     if (isNaN(r) || isNaN(g) || isNaN(b)) {
-        animateErrorFeedback(document.getElementById('addRgbBtn'));
+        animateErrorFeedback(document.getElementById('addRgbBtn'), 'fa-plus');
         return;
     }
     const [h, s, v] = rgbToHsv(r, g, b);
@@ -248,7 +257,7 @@ document.getElementById('addRgbBtn').addEventListener('click', () => {
 
     const hex = rgbToHex(r, g, b)
     if ([...palette.querySelectorAll('.hex-label')].some(label => label.textContent === hex)) {
-        animateErrorFeedback(document.getElementById('addRgbBtn'));
+        animateErrorFeedback(document.getElementById('addRgbBtn'), 'fa-plus');
         return;
     } else {
         addColorToPalette(hex, true);
@@ -261,7 +270,7 @@ document.getElementById('addHsvBtn').addEventListener('click', () => {
     const s = parseFloat(sInput.value) / 100;
     const v = parseFloat(vInput.value) / 100;
     if (isNaN(h) || isNaN(s) || isNaN(v)) {
-        animateErrorFeedback(document.getElementById('addHsvBtn'));
+        animateErrorFeedback(document.getElementById('addHsvBtn'), 'fa-plus');
         return;
     }
     currentHue = h;
@@ -273,7 +282,7 @@ document.getElementById('addHsvBtn').addEventListener('click', () => {
     const hex = rgbToHex(r, g, b)
 
     if ([...palette.querySelectorAll('.hex-label')].some(label => label.textContent === hex)) {
-        animateErrorFeedback(document.getElementById('addHsvBtn'));
+        animateErrorFeedback(document.getElementById('addHsvBtn'), 'fa-plus');
         return;
     } else {
         addColorToPalette(hex, true);
@@ -304,22 +313,32 @@ document.getElementById('copyRgbBtn').addEventListener('click', () => {
     const r = rInput.value;
     const g = gInput.value;
     const b = bInput.value;
-    const rgbText = `rgb(${r}, ${g}, ${b})`;
 
-    navigator.clipboard.writeText(rgbText).then(() => {
-        animateCopyFeedback(document.getElementById('copyRgbBtn'));
-    });
+    if (isBlank(r) || isBlank(g) || isBlank(b)) {
+        animateErrorFeedback(document.getElementById('copyRgbBtn'), 'fa-copy');
+        return;
+    } else {
+        const rgbText = `rgb(${r}, ${g}, ${b})`;
+        navigator.clipboard.writeText(rgbText).then(() => {
+            animateCopyFeedback(document.getElementById('copyRgbBtn'));
+        });
+    }
 });
 
 document.getElementById('copyHsvBtn').addEventListener('click', () => {
     const h = hInput.value;
     const s = sInput.value;
     const v = vInput.value;
-    const hsvText = `hsv(${h}, ${s}, ${v})`;
 
-    navigator.clipboard.writeText(hsvText).then(() => {
-        animateCopyFeedback(document.getElementById('copyHsvBtn'));
-    });
+    if (isBlank(h) || isBlank(s) || isBlank(v)) {
+        animateErrorFeedback(document.getElementById('copyHsvBtn'), 'fa-copy');
+        return;
+    } else {
+        const hsvText = `hsv(${h}, ${s}, ${v})`;
+        navigator.clipboard.writeText(hsvText).then(() => {
+            animateCopyFeedback(document.getElementById('copyHsvBtn'));
+        });
+    }
 });
 
 function animateCopyFeedback(button, iconSelector = 'i') {
@@ -360,12 +379,19 @@ function animateAddFeedback(button, iconSelector = 'i') {
     }, 800);
 }
 
-function animateErrorFeedback(button, iconSelector = 'i') {
+/**
+ * アイコンをバツマークに更新し、フェードアニメーションを付与する
+ * @param {*} button ボタンのエレメント
+ * @param {*} originalIcon 元々のアイコンクラス名（FontAwesome準拠）
+ * @param {*} iconSelector アイコンのセレクタ（通常i）
+ * @returns 
+ */
+function animateErrorFeedback(button, originalIcon, iconSelector = 'i') {
     const icon = button.querySelector(iconSelector);
     if (!icon) return;
 
     // バツアイコンに変更
-    icon.classList.remove('fa-plus');
+    icon.classList.remove(originalIcon);
     icon.classList.add('fa-xmark');
     button.classList.add('error-feedback');
 
@@ -375,7 +401,7 @@ function animateErrorFeedback(button, iconSelector = 'i') {
     // 元に戻す
     setTimeout(() => {
         icon.classList.remove('fa-xmark', 'fade-out');
-        icon.classList.add('fa-plus');
+        icon.classList.add(originalIcon);
         button.classList.remove('error-feedback');
     }, 800);
 }
