@@ -145,15 +145,15 @@ canvas:hover {
     cursor: pointer;
 }
 
+#killPaletteBtn,
 #clearPaletteBtn,
 #sortPaletteLabBtn {
-    margin-top: 10px;
     padding: 6px 12px;
     background-color: #30bb2e;
     color: white;
     border: none;
     border-radius: 4px;
-    font-size: 14px;
+    font-size: 16px;
     cursor: pointer;
 }
 
@@ -277,7 +277,6 @@ canvas:hover {
 .input-row input[type="number"] {
     width: 100px;
     padding: 6px 10px;
-    /* 少し細めに調整してみてもOK */
     font-size: 20px;
     border: 1px solid #ccc;
     border-radius: 6px;
@@ -285,4 +284,23 @@ canvas:hover {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     transition: border 0.3s ease, box-shadow 0.3s ease;
     text-align: center;
+}
+
+.threshold-input {
+    width: 100px;
+    padding: 6px 10px;
+    font-size: 18px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: border 0.3s, box-shadow 0.3s;
+    text-align: center;
+}
+
+.buttons {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-top: 20px;
 }

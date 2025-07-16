@@ -508,7 +508,50 @@ function saveSortedPaletteToStorage(hexList) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(hexList));
 }
 
+/* ===== パレットの重複の削除 ===== */
+
+function removeSimilarColorsFromPalette(threshold = 10) {
+    const boxes = Array.from(document.querySelectorAll('.color-box'));
+    if (boxes.length < 2) return;
+
+    // 色をLab空間に変換
+    const labBoxes = boxes.map(box => {
+        const hex = box.querySelector('.hex-label')?.textContent;
+        const rgb = hexToRgb(hex);
+        const xyz = rgbToXyz(rgb);
+        const lab = xyzToLab(xyz);
+        return { box, lab, hex };
+    });
+
+    const toRemove = new Set();
+    for (let i = 0; i < labBoxes.length; i++) {
+        if (toRemove.has(labBoxes[i].box)) continue;
+        for (let j = i + 1; j < labBoxes.length; j++) {
+            if (toRemove.has(labBoxes[j].box)) continue;
+            const dE = deltaE(labBoxes[i].lab, labBoxes[j].lab);
+            if (dE < threshold) {
+                // j番目を類似色とみなし削除対象
+                toRemove.add(labBoxes[j].box);
+            }
+        }
+    }
+
+    // DOMとlocalStorageから削除
+    toRemove.forEach(box => {
+        const hex = box.querySelector('.hex-label').textContent;
+        box.parentNode.removeChild(box);
+        removeFromStorage(hex); // 既存関数
+    });
+}
+
 document.getElementById('sortPaletteLabBtn').addEventListener('click', sortPaletteByLab);
+
+document.getElementById('killPaletteBtn').addEventListener('click', function () {
+    const thresholdInput = document.getElementById('threshold');
+    let threshold = parseFloat(thresholdInput.value);
+    if (isNaN(threshold) || threshold < 1) threshold = 7;
+    removeSimilarColorsFromPalette(threshold);
+});
 
 /* ===== 色追加ボタン ===== */
 
