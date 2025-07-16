@@ -122,8 +122,6 @@ function updateHueIndicator(hue) {
 /* ===== 色の追加・削除 ===== */
 
 function addColorToPalette(hex, save = true) {
-    if ([...palette.querySelectorAll('.hex-label')].some(label => label.textContent === hex)) return;
-
     const box = document.createElement('div');
     box.className = 'color-box';
 
@@ -248,9 +246,14 @@ document.getElementById('addRgbBtn').addEventListener('click', () => {
     updateHueIndicator(h);
     updateColorPreview(h, s, v);
 
-    addColorToPalette(rgbToHex(r, g, b));
-    animateAddFeedback(document.getElementById('addRgbBtn'));
-
+    const hex = rgbToHex(r, g, b)
+    if ([...palette.querySelectorAll('.hex-label')].some(label => label.textContent === hex)) {
+        animateErrorFeedback(document.getElementById('addRgbBtn'));
+        return;
+    } else {
+        addColorToPalette(hex, true);
+        animateAddFeedback(document.getElementById('addRgbBtn'));
+    }
 });
 
 document.getElementById('addHsvBtn').addEventListener('click', () => {
@@ -267,8 +270,15 @@ document.getElementById('addHsvBtn').addEventListener('click', () => {
     updateColorPreview(h, s, v);
 
     const [r, g, b] = hsvToRgb(h, s, v);
-    addColorToPalette(rgbToHex(r, g, b));
-    animateAddFeedback(document.getElementById('addHsvBtn'));
+    const hex = rgbToHex(r, g, b)
+
+    if ([...palette.querySelectorAll('.hex-label')].some(label => label.textContent === hex)) {
+        animateErrorFeedback(document.getElementById('addHsvBtn'));
+        return;
+    } else {
+        addColorToPalette(hex, true);
+        animateAddFeedback(document.getElementById('addHsvBtn'));
+    }
 });
 
 document.getElementById('addRgbBtn').addEventListener('mouseenter', () => {
