@@ -228,7 +228,6 @@ canvas:hover {
     height: auto;
 }
 
-/* 対象のボタンに共通クラスを与える場合（例：copy-btn, action-btn） */
 .copy-btn,
 .action-btn {
     background: #3498db;
@@ -243,13 +242,11 @@ canvas:hover {
     position: relative;
 }
 
-/* ホバー時：深い青 */
 .copy-btn:hover,
 .action-btn:hover {
     background-color: #217dbb;
 }
 
-/* コピーされた後のアニメーション（ふわっと緑の光） */
 .copy-btn.copied-feedback,
 .action-btn.copied-feedback {
     background-color: #2ecc71;
@@ -257,13 +254,11 @@ canvas:hover {
     transition: background-color 0.3s, box-shadow 0.6s;
 }
 
-/* アニメーション効果を滑らかにするためにトランジションを強化 */
 .copy-btn i,
 .action-btn i {
     transition: opacity 0.4s, transform 0.4s;
 }
 
-/* エラー時：赤くフラッシュする */
 .copy-btn.error-feedback,
 .action-btn.error-feedback {
     background-color: #e74c3c;
@@ -271,7 +266,6 @@ canvas:hover {
     transition: background-color 0.3s ease, box-shadow 0.6s ease;
 }
 
-/* フェードアウト共通 */
 .copy-btn i.fade-out,
 .action-btn i.fade-out {
     opacity: 0;
