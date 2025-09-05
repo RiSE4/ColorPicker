@@ -171,7 +171,8 @@ canvas:hover {
 
 #killPaletteBtn,
 #clearPaletteBtn,
-#sortPaletteLabBtn {
+#sortPaletteLabBtn,
+#dropperBtn {
     padding: 6px 12px;
     background-color: #30bb2e;
     color: white;

@@ -691,3 +691,17 @@ document.querySelectorAll('input[type="number"]').forEach(input => {
         }
     });
 });
+
+document.getElementById('dropperBtn').addEventListener('click', async () => {
+    if (!window.EyeDropper) {
+        alert("このブラウザは EyeDropper API に対応していないため、この機能は使用できません。");
+        return;
+    }
+    try {
+        const dropper = new EyeDropper();
+        const { sRGBHex } = await dropper.open();
+        addColorToPalette(sRGBHex, true);
+    } catch (err) {
+        //握りつぶす
+    }
+});
