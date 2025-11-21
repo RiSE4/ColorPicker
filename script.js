@@ -57,7 +57,7 @@ const hueCanvas = document.getElementById('hueCanvas');
 const svCtx = svCanvas.getContext('2d');
 const hueCtx = hueCanvas.getContext('2d');
 const colorPreview = document.getElementById('colorPreview');
-const hexValue = document.getElementById('hexValue');
+const hexValue = document.getElementById('hexInput');
 const palette = document.getElementById('palette');
 const clearButton = document.getElementById('clearPaletteBtn');
 const STORAGE_KEY = 'colorPalette';
@@ -110,7 +110,7 @@ function updateColorPreview(h, s, v) {
     const [r, g, b] = hsvToRgb(h, s, v);
     const hex = rgbToHex(r, g, b);
     colorPreview.style.backgroundColor = hex;
-    hexValue.textContent = hex;
+    hexValue.value = hex.substring(1);
     return hex;
 }
 
@@ -208,6 +208,19 @@ function loadSavedColors() {
 
 /* ===== イベントの設定 ===== */
 
+function updateFromHexInput() {
+    const hex = '#' + hexValue.value.trim();
+    if (!/^#([0-9A-Fa-f]{6})$/.test(hex)) return;
+
+    const { r, g, b } = hexToRgb(hex);
+    const [h, s, v] = rgbToHsv(r, g, b);
+    currentHue = h;
+    drawSVCanvas(h);
+    updateHueIndicator(h);
+    updateInputs(h, s, v, r, g, b);
+    updateColorPreview(h, s, v);
+}
+
 function updateFromRGBInputs() {
     const r = +rInput.value, g = +gInput.value, b = +bInput.value;
     if (isNaN(r) || isNaN(g) || isNaN(b)) return;
@@ -215,7 +228,7 @@ function updateFromRGBInputs() {
     const [h, s, v] = rgbToHsv(r, g, b);
     currentHue = h;
     drawSVCanvas(currentHue);
-    // updateSVIndicatorFromHSV(h, s, v);
+    updateHueIndicator(h);
     updateInputs(h, s, v, r, g, b);
     updateColorPreview(h, s, v);
 }
@@ -228,19 +241,19 @@ function updateFromHSVInputs() {
 
     currentHue = h;
     drawSVCanvas(h);
-    // updateSVIndicatorFromHSV(h, s, v);
+    updateHueIndicator(h);
     const [r, g, b] = hsvToRgb(h, s, v);
     updateInputs(h, s, v, r, g, b);
     updateColorPreview(h, s, v);
 }
 
+hexValue.addEventListener('input', updateFromHexInput);
 [rInput, gInput, bInput].forEach(input =>
     input.addEventListener('input', updateFromRGBInputs)
 );
 [hInput, sInput, vInput].forEach(input =>
     input.addEventListener('input', updateFromHSVInputs)
 );
-
 document.getElementById('addRgbBtn').addEventListener('click', () => {
     const r = parseInt(rInput.value);
     const g = parseInt(gInput.value);
