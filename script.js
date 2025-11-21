@@ -254,6 +254,29 @@ hexValue.addEventListener('input', updateFromHexInput);
 [hInput, sInput, vInput].forEach(input =>
     input.addEventListener('input', updateFromHSVInputs)
 );
+
+document.getElementById('addHexBtn').addEventListener('click', () => {
+    const hex = '#' + hexValue.value.trim();
+    if (!/^#([0-9A-Fa-f]{6})$/.test(hex)) {
+        animateErrorFeedback(document.getElementById('addHexBtn'), 'fa-plus');
+        return;
+    }
+    const { r, g, b } = hexToRgb(hex);
+    const [h, s, v] = rgbToHsv(r, g, b);
+    currentHue = h;
+    drawSVCanvas(h);
+    updateHueIndicator(h);
+    updateColorPreview(h, s, v);
+    updateInputs(h, s, v, r, g, b);
+    if ([...palette.querySelectorAll('.hex-label')].some(label => label.textContent === hex)) {
+        animateErrorFeedback(document.getElementById('addHexBtn'), 'fa-plus');
+        return;
+    } else {
+        addColorToPalette(hex, true);
+        animateAddFeedback(document.getElementById('addHexBtn'));
+    }
+});
+
 document.getElementById('addRgbBtn').addEventListener('click', () => {
     const r = parseInt(rInput.value);
     const g = parseInt(gInput.value);
@@ -320,6 +343,18 @@ document.getElementById('addHsvBtn').addEventListener('mouseenter', () => {
     if (isNaN(h) || isNaN(s) || isNaN(v)) return;
 
     updateColorPreview(h, s, v);
+});
+
+document.getElementById('copyHexBtn').addEventListener('click', () => {
+    const hex = '#' + hexValue.value.trim();
+    if (!/^#([0-9A-Fa-f]{6})$/.test(hex)) {
+        animateErrorFeedback(document.getElementById('copyHexBtn'), 'fa-copy');
+        return;
+    } else {
+        navigator.clipboard.writeText(hex).then(() => {
+            animateCopyFeedback(document.getElementById('copyHexBtn'));
+        });
+    }
 });
 
 document.getElementById('copyRgbBtn').addEventListener('click', () => {
