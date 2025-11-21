@@ -106,6 +106,25 @@ function drawSVCanvas(hue) {
     svCtx.fillRect(0, 0, width, height);
 }
 
+function updatePointer() {
+    const s = parseFloat(sInput.value) / 100;
+    const v = parseFloat(vInput.value) / 100;
+
+    const w = svCanvas.width;
+    const h = svCanvas.height;
+    const radius = 6;
+
+    let x = s * w;
+    let y = (1 - v) * h;
+
+    x = Math.max(radius, Math.min(w - radius, x));
+    y = Math.max(radius, Math.min(h - radius, y));
+
+    const pointer = document.getElementById('canvasPointer');
+    pointer.style.left = `${x}px`;
+    pointer.style.top = `${y}px`;
+}
+
 function updateColorPreview(h, s, v) {
     const [r, g, b] = hsvToRgb(h, s, v);
     const hex = rgbToHex(r, g, b);
@@ -157,6 +176,7 @@ function addColorToPalette(hex, save = true) {
         updateHueIndicator(h);
         updateInputs(h, s, v, r, g, b);
         updateColorPreview(h, s, v);
+        updatePointer();
     });
 
     const deleteBtn = document.createElement('button');
@@ -710,11 +730,43 @@ svCanvas.addEventListener('mousemove', e => {
     const s = x / svCanvas.width;
     const v = 1 - y / svCanvas.height;
     updateColorPreview(currentHue, s, v);
+    updatePointer();
 });
 
-function updateSVIndicatorFromHSV(h, s, v) {
-    // 必要に応じてキャンバス上にインジケータを描く処理を追加
-    // 例: crosshairなど
+let isDragging = false;
+
+svCanvas.addEventListener('mousedown', (e) => {
+    isDragging = true;
+
+    const rect = svCanvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    movePointer(x, y);
+});
+
+svCanvas.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+
+    const rect = svCanvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    movePointer(x, y);
+});
+
+document.addEventListener('mouseup', () => {
+    isDragging = false;
+});
+
+function movePointer(x, y) {
+    const pointer = document.getElementById('canvasPointer');
+
+    const clampedX = Math.min(Math.max(x, 0), svCanvas.width);
+    const clampedY = Math.min(Math.max(y, 0), svCanvas.height);
+
+    pointer.style.left = `${clampedX}px`;
+    pointer.style.top = `${clampedY}px`;
 }
 
 /* ===== RGB/HSV 入力値補正 ===== */
