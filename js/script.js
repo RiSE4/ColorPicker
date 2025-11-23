@@ -1,55 +1,3 @@
-/* ===== ユーティリティ関数 ===== */
-
-function hsvToRgb(h, s, v) {
-    let f = (n, k = (n + h / 60) % 6) =>
-        v - v * s * Math.max(Math.min(k, 4 - k, 1), 0);
-    return [
-        Math.round(f(5) * 255),
-        Math.round(f(3) * 255),
-        Math.round(f(1) * 255)
-    ];
-}
-
-function rgbToHsv(r, g, b) {
-    r /= 255; g /= 255; b /= 255;
-    let max = Math.max(r, g, b), min = Math.min(r, g, b);
-    let h = 0, s, v = max, d = max - min;
-    s = max === 0 ? 0 : d / max;
-    if (d !== 0) {
-        switch (max) {
-            case r: h = ((g - b) / d) + (g < b ? 6 : 0); break;
-            case g: h = ((b - r) / d) + 2; break;
-            case b: h = ((r - g) / d) + 4; break;
-        }
-        h *= 60;
-    }
-    return [h, s, v];
-}
-
-function rgbToHex(r, g, b) {
-    return "#" + [r, g, b].map(x =>
-        x.toString(16).padStart(2, '0')
-    ).join('').toUpperCase();
-}
-
-function hexToRgb(hex) {
-    const bigint = parseInt(hex.slice(1), 16);
-    return {
-        r: (bigint >> 16) & 255,
-        g: (bigint >> 8) & 255,
-        b: bigint & 255
-    };
-}
-
-/**
- * 値が空白かどうかをチェックする
- * @param {*} value 
- * @returns 
- */
-function isBlank(value) {
-    return value === undefined || value === null || String(value).trim() === '';
-}
-
 /* ===== DOM取得 ===== */
 
 const svCanvas = document.getElementById('svCanvas');
@@ -80,15 +28,6 @@ loadSavedColors();
 
 /* ===== 描画・更新 ===== */
 
-function drawHueSlider() {
-    const grad = hueCtx.createLinearGradient(0, 0, hueCanvas.width, 0);
-    for (let i = 0; i <= 360; i += 60) {
-        grad.addColorStop(i / 360, `hsl(${i}, 100%, 50%)`);
-    }
-    hueCtx.fillStyle = grad;
-    hueCtx.fillRect(0, 0, hueCanvas.width, hueCanvas.height);
-}
-
 function drawSVCanvas(hue) {
     const width = svCanvas.width;
     const height = svCanvas.height;
@@ -104,6 +43,15 @@ function drawSVCanvas(hue) {
     valGrad.addColorStop(1, 'rgba(0,0,0,1)');
     svCtx.fillStyle = valGrad;
     svCtx.fillRect(0, 0, width, height);
+}
+
+function drawHueSlider() {
+    const grad = hueCtx.createLinearGradient(0, 0, hueCanvas.width, 0);
+    for (let i = 0; i <= 360; i += 60) {
+        grad.addColorStop(i / 360, `hsl(${i}, 100%, 50%)`);
+    }
+    hueCtx.fillStyle = grad;
+    hueCtx.fillRect(0, 0, hueCanvas.width, hueCanvas.height);
 }
 
 function updatePointer() {
@@ -125,12 +73,9 @@ function updatePointer() {
     pointer.style.top = `${y}px`;
 }
 
-function updateColorPreview(h, s, v) {
-    const [r, g, b] = hsvToRgb(h, s, v);
-    const hex = rgbToHex(r, g, b);
-    colorPreview.style.backgroundColor = hex;
-    hexValue.value = hex.substring(1);
-    return hex;
+function updateHueIndicator(hue) {
+    const x = (hue / 360) * hueCanvas.width;
+    hueIndicator.style.left = `${x}px`;
 }
 
 function updateInputs(h, s, v, r, g, b) {
@@ -142,9 +87,12 @@ function updateInputs(h, s, v, r, g, b) {
     vInput.value = Math.round(v * 100);
 }
 
-function updateHueIndicator(hue) {
-    const x = (hue / 360) * hueCanvas.width;
-    hueIndicator.style.left = `${x}px`;
+function updateColorPreview(h, s, v) {
+    const [r, g, b] = hsvToRgb(h, s, v);
+    const hex = rgbToHex(r, g, b);
+    colorPreview.style.backgroundColor = hex;
+    hexValue.value = hex.substring(1);
+    return hex;
 }
 
 /* ===== 色の追加・削除 ===== */
@@ -196,6 +144,14 @@ function addColorToPalette(hex, save = true) {
     if (save) saveColor(hex);
 }
 
+function saveColor(hex) {
+    const existing = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    if (!existing.includes(hex)) {
+        existing.push(hex);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(existing));
+    }
+}
+
 function showCopyNotice(hex) {
     const boxes = document.querySelectorAll('.color-box');
     boxes.forEach(box => {
@@ -207,23 +163,15 @@ function showCopyNotice(hex) {
     });
 }
 
-function saveColor(hex) {
-    const existing = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-    if (!existing.includes(hex)) {
-        existing.push(hex);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(existing));
-    }
+function loadSavedColors() {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    saved.forEach(hex => addColorToPalette(hex, false));
 }
 
 function removeFromStorage(hex) {
     const existing = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
     const filtered = existing.filter(h => h !== hex);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
-}
-
-function loadSavedColors() {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-    saved.forEach(hex => addColorToPalette(hex, false));
 }
 
 /* ===== イベントの設定 ===== */
@@ -234,11 +182,11 @@ function updateFromHexInput() {
 
     const { r, g, b } = hexToRgb(hex);
     const [h, s, v] = rgbToHsv(r, g, b);
-    currentHue = h;
     drawSVCanvas(h);
     updateHueIndicator(h);
     updateInputs(h, s, v, r, g, b);
     updateColorPreview(h, s, v);
+    updatePointer();
 }
 
 function updateFromRGBInputs() {
@@ -246,11 +194,11 @@ function updateFromRGBInputs() {
     if (isNaN(r) || isNaN(g) || isNaN(b)) return;
 
     const [h, s, v] = rgbToHsv(r, g, b);
-    currentHue = h;
-    drawSVCanvas(currentHue);
+    drawSVCanvas(h);
     updateHueIndicator(h);
     updateInputs(h, s, v, r, g, b);
     updateColorPreview(h, s, v);
+    updatePointer();
 }
 
 function updateFromHSVInputs() {
@@ -259,12 +207,12 @@ function updateFromHSVInputs() {
     const v = +vInput.value / 100;
     if (isNaN(h) || isNaN(s) || isNaN(v)) return;
 
-    currentHue = h;
     drawSVCanvas(h);
     updateHueIndicator(h);
     const [r, g, b] = hsvToRgb(h, s, v);
     updateInputs(h, s, v, r, g, b);
     updateColorPreview(h, s, v);
+    updatePointer();
 }
 
 hexValue.addEventListener('input', updateFromHexInput);
@@ -284,9 +232,6 @@ document.getElementById('addHexBtn').addEventListener('click', () => {
     const { r, g, b } = hexToRgb(hex);
     const [h, s, v] = rgbToHsv(r, g, b);
     currentHue = h;
-    drawSVCanvas(h);
-    updateHueIndicator(h);
-    updateColorPreview(h, s, v);
     updateInputs(h, s, v, r, g, b);
     if ([...palette.querySelectorAll('.hex-label')].some(label => label.textContent === hex)) {
         animateErrorFeedback(document.getElementById('addHexBtn'), 'fa-plus');
@@ -307,10 +252,6 @@ document.getElementById('addRgbBtn').addEventListener('click', () => {
     }
     const [h, s, v] = rgbToHsv(r, g, b);
     currentHue = h;
-    drawSVCanvas(h);
-    updateHueIndicator(h);
-    updateColorPreview(h, s, v);
-
     const hex = rgbToHex(r, g, b)
     if ([...palette.querySelectorAll('.hex-label')].some(label => label.textContent === hex)) {
         animateErrorFeedback(document.getElementById('addRgbBtn'), 'fa-plus');
@@ -330,10 +271,6 @@ document.getElementById('addHsvBtn').addEventListener('click', () => {
         return;
     }
     currentHue = h;
-    drawSVCanvas(h);
-    updateHueIndicator(h);
-    updateColorPreview(h, s, v);
-
     const [r, g, b] = hsvToRgb(h, s, v);
     const hex = rgbToHex(r, g, b)
 
@@ -344,25 +281,6 @@ document.getElementById('addHsvBtn').addEventListener('click', () => {
         addColorToPalette(hex, true);
         animateAddFeedback(document.getElementById('addHsvBtn'));
     }
-});
-
-document.getElementById('addRgbBtn').addEventListener('mouseenter', () => {
-    const r = parseInt(rInput.value);
-    const g = parseInt(gInput.value);
-    const b = parseInt(bInput.value);
-    if (isNaN(r) || isNaN(g) || isNaN(b)) return;
-
-    const [h, s, v] = rgbToHsv(r, g, b);
-    updateColorPreview(h, s, v);
-});
-
-document.getElementById('addHsvBtn').addEventListener('mouseenter', () => {
-    const h = parseFloat(hInput.value);
-    const s = parseFloat(sInput.value) / 100;
-    const v = parseFloat(vInput.value) / 100;
-    if (isNaN(h) || isNaN(s) || isNaN(v)) return;
-
-    updateColorPreview(h, s, v);
 });
 
 document.getElementById('copyHexBtn').addEventListener('click', () => {
@@ -409,71 +327,6 @@ document.getElementById('copyHsvBtn').addEventListener('click', () => {
     }
 });
 
-function animateCopyFeedback(button, iconSelector = 'i') {
-    const icon = button.querySelector(iconSelector);
-    if (!icon) return;
-
-    //アイコンの切り替え
-    icon.classList.remove('fa-copy');
-    icon.classList.add('fa-check');
-    button.classList.add('copied-feedback');
-
-    setTimeout(() => icon.classList.add('fade-out'), 500);
-
-    setTimeout(() => {
-        icon.classList.remove('fa-check', 'fade-out');
-        icon.classList.add('fa-copy');
-        button.classList.remove('copied-feedback');
-    }, 800);
-}
-
-function animateAddFeedback(button, iconSelector = 'i') {
-    const icon = button.querySelector(iconSelector);
-    if (!icon) return;
-
-    // アイコンをチェックに変更
-    icon.classList.remove('fa-plus');
-    icon.classList.add('fa-check');
-    button.classList.add('copied-feedback');
-
-    // 少ししてフェードアウト
-    setTimeout(() => icon.classList.add('fade-out'), 500);
-
-    // 元に戻す
-    setTimeout(() => {
-        icon.classList.remove('fa-check', 'fade-out');
-        icon.classList.add('fa-plus');
-        button.classList.remove('copied-feedback');
-    }, 800);
-}
-
-/**
- * アイコンをバツマークに更新し、フェードアニメーションを付与する
- * @param {*} button ボタンのエレメント
- * @param {*} originalIcon 元々のアイコンクラス名（FontAwesome準拠）
- * @param {*} iconSelector アイコンのセレクタ（通常i）
- * @returns 
- */
-function animateErrorFeedback(button, originalIcon, iconSelector = 'i') {
-    const icon = button.querySelector(iconSelector);
-    if (!icon) return;
-
-    // バツアイコンに変更
-    icon.classList.remove(originalIcon);
-    icon.classList.add('fa-xmark');
-    button.classList.add('error-feedback');
-
-    // 少ししてフェードアウト
-    setTimeout(() => icon.classList.add('fade-out'), 500);
-
-    // 元に戻す
-    setTimeout(() => {
-        icon.classList.remove('fa-xmark', 'fade-out');
-        icon.classList.add(originalIcon);
-        button.classList.remove('error-feedback');
-    }, 800);
-}
-
 /* ===== パレットの生成と整列 ===== */
 
 function colorDistanceHSV(a, b) {
@@ -481,7 +334,7 @@ function colorDistanceHSV(a, b) {
     const satDiff = a.s - b.s;
     const valDiff = a.v - b.v;
 
-    // H > S > V の順番で優先
+    // H > V > S の順番で優先
     const weightH = 2.0, weightS = 1.0, weightV = 1.5;
 
     return Math.sqrt(
@@ -506,54 +359,15 @@ function generateUniqueColors(hue, count = 5, minDistance = 0.2) {
         }
     }
 
-    //5色未満の場合はコンソールに警告を表示（暫定処置）
-    if (results.length < count) {
-        console.warn(`Only ${results.length} unique colors could be generated.`);
-    }
+    //TODO 5色未満でも一旦放置
+    // if (results.length < count) {
+    //     console.warn(`Only ${results.length} unique colors could be generated.`);
+    // }
 
     return results;
 }
 
 /* ===== パレットの並び替え ===== */
-
-function rgbToXyz({ r, g, b }) {
-    // 0-255 → 0-1
-    r /= 255; g /= 255; b /= 255;
-
-    // ガンマ補正
-    r = r > 0.04045 ? ((r + 0.055) / 1.055) ** 2.4 : r / 12.92;
-    g = g > 0.04045 ? ((g + 0.055) / 1.055) ** 2.4 : g / 12.92;
-    b = b > 0.04045 ? ((b + 0.055) / 1.055) ** 2.4 : b / 12.92;
-
-    // sRGB → XYZ (D65)
-    return {
-        x: r * 0.4124 + g * 0.3576 + b * 0.1805,
-        y: r * 0.2126 + g * 0.7152 + b * 0.0722,
-        z: r * 0.0193 + g * 0.1192 + b * 0.9505
-    };
-}
-
-function xyzToLab({ x, y, z }) {
-    // D65白色点
-    const Xn = 0.95047, Yn = 1.00000, Zn = 1.08883;
-
-    x /= Xn; y /= Yn; z /= Zn;
-
-    const f = t => (t > 0.008856) ? Math.cbrt(t) : (7.787 * t + 16 / 116);
-
-    return {
-        L: 116 * f(y) - 16,
-        a: 500 * (f(x) - f(y)),
-        b: 200 * (f(y) - f(z))
-    };
-}
-
-function deltaE(lab1, lab2) {
-    const dL = lab1.L - lab2.L;
-    const da = lab1.a - lab2.a;
-    const db = lab1.b - lab2.b;
-    return Math.sqrt(dL * dL + da * da + db * db);
-}
 
 function sortPaletteByLab() {
     const boxes = Array.from(document.querySelectorAll('.color-box'));
@@ -654,12 +468,14 @@ document.querySelectorAll('#rainbowButtons button').forEach(btn => {
         const hue = parseFloat(btn.dataset.hue);
         currentHue = hue;
         drawSVCanvas(hue);
+        updatePointer();
         updateHueIndicator(hue);
         const colors = generateUniqueColors(hue, 5, 0.2);
         colors.forEach(({ h, s, v }) => {
             const hex = updateColorPreview(h, s, v);
             addColorToPalette(hex);
         });
+
     });
 });
 
@@ -802,6 +618,6 @@ document.getElementById('dropperBtn').addEventListener('click', async () => {
         const { sRGBHex } = await dropper.open();
         addColorToPalette(sRGBHex, true);
     } catch (err) {
-        //握りつぶす
+        //APIが対応している前提なので握りつぶす
     }
 });

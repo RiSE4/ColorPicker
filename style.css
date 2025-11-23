@@ -5,21 +5,72 @@ body {
     padding-bottom: 40px;
 }
 
+/* ---- Footer ---- */
 footer {
     position: fixed;
     bottom: 0;
-    margin-top: 30px;
     left: 0;
     width: 100%;
     height: 40px;
+    margin-top: 30px;
     background-color: #282828;
     color: white;
     font-size: 13px;
-
     text-align: center;
     line-height: 40px;
 }
 
+/* ---- Layout ---- */
+.app-wrap {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 16px;
+}
+
+.rightArea {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+@media (min-width: 1024px) {
+    .app-wrap {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+
+    #palette {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .rightArea {
+        width: auto;
+        margin-left: 1rem;
+        background: #fff;
+        border-radius: 8px;
+        padding: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        gap: 0.5rem;
+    }
+}
+
+/* Smartphone */
+@media (max-width: 1024px) {
+    .app-wrap {
+        flex-direction: column;
+    }
+
+    #palette {
+        width: 100%;
+        margin-top: 20px;
+    }
+}
+
+/* ---- Links ---- */
 a:visited {
     color: #2ecc71;
 }
@@ -28,6 +79,7 @@ a:link {
     color: skyblue;
 }
 
+/* ---- Canvas ---- */
 canvas {
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -40,6 +92,7 @@ canvas:hover {
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
 }
 
+/* ---- Picked Color ---- */
 #pickedColor {
     display: flex;
     align-items: center;
@@ -58,6 +111,7 @@ canvas:hover {
     font-weight: bold;
 }
 
+/* ---- Palette ---- */
 #palette {
     margin-top: 20px;
     display: flex;
@@ -65,43 +119,27 @@ canvas:hover {
     gap: 10px;
 }
 
-#hexValue {
-    font-size: 24px;
-    font-weight: bold;
-}
-
-#palette {
-    margin-top: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-#hexValue {
-    font-size: 24px;
-    font-weight: bold;
-}
-
-#palette {
-    margin-top: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
+/* ---- Color Box ---- */
 .color-box {
     width: 100px;
     height: 100px;
     border: 2px solid #ccc;
+    background: white;
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    position: relative;
-    background: white;
     transition: border-color 0.5s, box-shadow 0.5s, background-color 1s;
 }
 
+.color-box.copied {
+    border-color: #2ecc71;
+    box-shadow: 0 0 10px #2ecc71;
+    background-color: #e8fbe9;
+}
+
+/* Copied label */
 .copied-label {
     position: absolute;
     top: -20px;
@@ -122,29 +160,6 @@ canvas:hover {
     transform: translateY(-5px);
 }
 
-#rainbowButtons {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-    flex-wrap: wrap;
-}
-
-#rainbowButtons button {
-    color: #fff;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-size: 20px;
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-}
-
-.color-box.copied {
-    border-color: #2ecc71;
-    box-shadow: 0 0 10px #2ecc71;
-    background-color: #e8fbe9;
-}
-
 .color-sample {
     width: 80%;
     height: 60%;
@@ -160,15 +175,16 @@ canvas:hover {
     position: absolute;
     top: 4px;
     right: 6px;
-    background: #e74c3c;
-    color: white;
-    border: none;
-    border-radius: 50%;
     width: 20px;
     height: 20px;
+    border-radius: 50%;
+    border: none;
+    background: #e74c3c;
+    color: white;
     cursor: pointer;
 }
 
+/* ---- Buttons ---- */
 #killPaletteBtn,
 #clearPaletteBtn,
 #sortPaletteLabBtn,
@@ -182,64 +198,35 @@ canvas:hover {
     cursor: pointer;
 }
 
-#hueWrapper {
-    position: relative;
-    width: 300px;
-    margin-bottom: 20px;
-}
-
-#hueIndicator {
-    position: absolute;
-    top: 0;
-    width: 2px;
-    height: 30px;
-    background: black;
-    pointer-events: none;
-    transform: translateX(-1px);
-}
-
-.input-actions {
+#rainbowButtons {
     display: flex;
     gap: 10px;
-    align-items: center;
-    margin-top: 8px;
-    margin-bottom: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px;
 }
 
-#copyNotice {
-    background: #333;
+#rainbowButtons button {
     color: #fff;
-    padding: 8px 12px;
+    border: none;
+    padding: 6px 12px;
     border-radius: 4px;
-    display: inline-block;
-    margin-bottom: 10px;
-    transition: opacity 0.3s ease;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
-.hidden {
-    opacity: 0;
-    height: 0;
-    overflow: hidden;
-    visibility: hidden;
-}
-
-.visible {
-    opacity: 1;
-    visibility: visible;
-    height: auto;
-}
-
+/* ---- Copy feedback ---- */
 .copy-btn,
 .action-btn {
-    background: #3498db;
-    color: white;
-    border: none;
+    width: 60px;
     padding: 8px 14px;
+    font-size: 16px;
+    color: white;
+    background: #3498db;
+    border: none;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s, box-shadow 0.6s;
-    font-size: 16px;
-    width: 60px;
     position: relative;
 }
 
@@ -248,11 +235,14 @@ canvas:hover {
     background-color: #217dbb;
 }
 
-.copy-btn.copied-feedback,
-.action-btn.copied-feedback {
+.copied-feedback {
     background-color: #2ecc71;
     box-shadow: 0 0 0 4px rgba(46, 204, 113, 0.5);
-    transition: background-color 0.3s, box-shadow 0.6s;
+}
+
+.error-feedback {
+    background-color: #e74c3c;
+    box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.5);
 }
 
 .copy-btn i,
@@ -260,29 +250,69 @@ canvas:hover {
     transition: opacity 0.4s, transform 0.4s;
 }
 
-.copy-btn.error-feedback,
-.action-btn.error-feedback {
-    background-color: #e74c3c;
-    box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.5);
-    transition: background-color 0.3s ease, box-shadow 0.6s ease;
-}
-
-.copy-btn i.fade-out,
-.action-btn i.fade-out {
+.fade-out {
     opacity: 0;
     transform: scale(0.8);
-    transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
-.hexInput {
-    height: 35px;
-    margin: auto;
+/* ---- Inputs ---- */
+.input-actions,
+.input-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.input-block {
+    margin: 16px 0;
+}
+
+.input-block label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+}
+
+.input-row input,
+.threshold-input {
+    width: 100px;
+    padding: 12px 14px;
+    font-size: 20px;
+    text-align: center;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: border 0.3s, box-shadow 0.3s;
+}
+
+/* ---- Misc ---- */
+#copyNotice {
+    background: #333;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    transition: opacity 0.3s ease;
+}
+
+.hidden {
+    opacity: 0;
+    height: 0;
+    visibility: hidden;
+    overflow: hidden;
+}
+
+.visible {
+    opacity: 1;
+    visibility: visible;
+    height: auto;
 }
 
 #canvasWrapper {
     position: relative;
-    width: 700px;
-    height: 300px;
 }
 
 .pointer {
@@ -293,48 +323,6 @@ canvas:hover {
     border-radius: 50%;
     pointer-events: none;
     transform: translate(-6px, -6px);
-}
-
-.input-block {
-    margin: 16px 0;
-}
-
-.input-block label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 6px;
-    font-size: 14px;
-    color: #333;
-}
-
-.input-row {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.input-row input {
-    width: 100px;
-    padding: 6px 10px;
-    font-size: 20px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    transition: border 0.3s ease, box-shadow 0.3s ease;
-    text-align: center;
-}
-
-.threshold-input {
-    width: 100px;
-    padding: 6px 10px;
-    font-size: 18px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    transition: border 0.3s, box-shadow 0.3s;
-    text-align: center;
 }
 
 .buttons {

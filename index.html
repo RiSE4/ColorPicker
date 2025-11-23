@@ -13,79 +13,85 @@
 
 <body>
     <h1>Color Picker</h1>
-    <div id="canvasWrapper">
-        <div id="canvasPointer" class="pointer"></div>
-        <canvas id="svCanvas" width="700" height="300"></canvas>
-    </div>
-    <div id="hueWrapper">
-        <canvas id="hueCanvas" width="700" height="30"></canvas>
-        <div id="hueIndicator"></div>
-    </div>
-    <div id="pickedColor">
-        <div id="colorPreview" class="color-preview"></div>
-        <span id="hexValue">#</span>
-        <div class="input-row">
-            <input type="text" id="hexInput" class="hexInput" max-length="6" placeholder="HEX">
-            <div class="input-actions">
-                <button id="addHexBtn" class="action-btn"><i class="fas fa-plus"></i></button>
-                <button id="copyHexBtn" class="copy-btn"><i class="fas fa-copy"></i></button>
+
+    <div class="app-wrap">
+        <div class="leftArea">
+            <div id="canvasWrapper">
+                <div id="canvasPointer" class="pointer"></div>
+                <canvas id="svCanvas" width="700" height="380"></canvas>
+            </div>
+            <div id="hueWrapper">
+                <canvas id="hueCanvas" width="700" height="30"></canvas>
+                <div id="hueIndicator"></div>
             </div>
         </div>
-    </div>
-
-    <div class="input-block">
-        <label>RGB:</label>
-        <div class="input-row">
-            <input type="number" id="rInput" min="0" max="255" placeholder="R">
-            <input type="number" id="gInput" min="0" max="255" placeholder="G">
-            <input type="number" id="bInput" min="0" max="255" placeholder="B">
-            <div class="input-actions">
-                <button id="addRgbBtn" class="action-btn"><i class="fas fa-plus"></i></button>
-                <button id="copyRgbBtn" class="copy-btn"><i class="fas fa-copy"></i></button>
+        <div class="rightArea">
+            <div id="pickedColor">
+                <div id="colorPreview" class="color-preview"></div>
+                <span id="hexValue">#</span>
+                <div class="input-row">
+                    <input type="text" id="hexInput" class="hexInput" max-length="6" placeholder="HEX">
+                    <div class="input-actions">
+                        <button id="addHexBtn" class="action-btn"><i class="fas fa-plus"></i></button>
+                        <button id="copyHexBtn" class="copy-btn"><i class="fas fa-copy"></i></button>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-
-    <div class="input-block">
-        <label>HSV:</label>
-        <div class="input-row">
-            <input type="number" id="hInput" min="0" max="360" placeholder="H">
-            <input type="number" id="sInput" min="0" max="100" placeholder="S">
-            <input type="number" id="vInput" min="0" max="100" placeholder="V">
-            <div class="input-actions">
-                <button id="addHsvBtn" class="action-btn"><i class="fas fa-plus"></i></button>
-                <button id="copyHsvBtn" class="copy-btn"><i class="fas fa-copy"></i></button>
+            <div class="input-block">
+                <label>RGB:</label>
+                <div class="input-row">
+                    <input type="number" id="rInput" min="0" max="255" placeholder="R">
+                    <input type="number" id="gInput" min="0" max="255" placeholder="G">
+                    <input type="number" id="bInput" min="0" max="255" placeholder="B">
+                    <div class="input-actions">
+                        <button id="addRgbBtn" class="action-btn"><i class="fas fa-plus"></i></button>
+                        <button id="copyRgbBtn" class="copy-btn"><i class="fas fa-copy"></i></button>
+                    </div>
+                </div>
             </div>
+
+            <div class="input-block">
+                <label>HSV:</label>
+                <div class="input-row">
+                    <input type="number" id="hInput" min="0" max="360" placeholder="H">
+                    <input type="number" id="sInput" min="0" max="100" placeholder="S">
+                    <input type="number" id="vInput" min="0" max="100" placeholder="V">
+                    <div class="input-actions">
+                        <button id="addHsvBtn" class="action-btn"><i class="fas fa-plus"></i></button>
+                        <button id="copyHsvBtn" class="copy-btn"><i class="fas fa-copy"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div id="rainbowButtons">
+                <button data-hue="0" style="background-color: hsl(0, 100%, 50%)">　　</button>
+                <button data-hue="30" style="background-color: hsl(30, 100%, 50%)">　　</button>
+                <button data-hue="60" style="background-color: hsl(60, 100%, 50%)">　　</button>
+                <button data-hue="90" style="background-color: hsl(90, 100%, 50%)">　　</button>
+                <button data-hue="120" style="background-color: hsl(120, 100%, 50%)">　　</button>
+                <button data-hue="150" style="background-color: hsl(150, 100%, 50%)">　　</button>
+                <button data-hue="180" style="background-color: hsl(180, 100%, 50%)">　　</button>
+                <button data-hue="210" style="background-color: hsl(210, 100%, 50%)">　　</button>
+                <button data-hue="240" style="background-color: hsl(240, 100%, 50%)">　　</button>
+                <button data-hue="270" style="background-color: hsl(270, 100%, 50%)">　　</button>
+                <button data-hue="300" style="background-color: hsl(300, 100%, 50%)">　　</button>
+                <button data-hue="330" style="background-color: hsl(330, 100%, 50%)">　　</button>
+            </div>
+            <div class="buttons">
+                <label for="threshold">しきい値 (ΔE):</label>
+                <input type="number" id="threshold" class="threshold-input" maxlength="1" value="7" placeholder="ΔE"
+                    style="width:3em;">
+                <button id="killPaletteBtn">🔎近い色を結合</button>
+                <button id="dropperBtn">🎯スポイト</button>
+                <button id="sortPaletteLabBtn">🎨パレットを並び替え</button>
+                <button id="clearPaletteBtn">🧹パレットをクリア</button>
+            </div>
+
         </div>
-    </div>
-    <div id="rainbowButtons">
-        <button data-hue="0" style="background-color: hsl(0, 100%, 50%)">　　</button>
-        <button data-hue="30" style="background-color: hsl(30, 100%, 50%)">　　</button>
-        <button data-hue="60" style="background-color: hsl(60, 100%, 50%)">　　</button>
-        <button data-hue="90" style="background-color: hsl(90, 100%, 50%)">　　</button>
-        <button data-hue="120" style="background-color: hsl(120, 100%, 50%)">　　</button>
-        <button data-hue="150" style="background-color: hsl(150, 100%, 50%)">　　</button>
-        <button data-hue="180" style="background-color: hsl(180, 100%, 50%)">　　</button>
-        <button data-hue="210" style="background-color: hsl(210, 100%, 50%)">　　</button>
-        <button data-hue="240" style="background-color: hsl(240, 100%, 50%)">　　</button>
-        <button data-hue="270" style="background-color: hsl(270, 100%, 50%)">　　</button>
-        <button data-hue="300" style="background-color: hsl(300, 100%, 50%)">　　</button>
-        <button data-hue="330" style="background-color: hsl(330, 100%, 50%)">　　</button>
-    </div>
-    <div class="buttons">
-        <label for="threshold">しきい値 (ΔE):</label>
-        <input type="number" id="threshold" class="threshold-input" maxlength="1" value="7" placeholder="ΔE"
-            style="width:3em;">
-        <button id="killPaletteBtn">🔎近い色を結合</button>
-        <button id="dropperBtn">🎯スポイト</button>
-        <button id="sortPaletteLabBtn">🎨パレットを並び替え</button>
-        <button id="clearPaletteBtn">🧹パレットをクリア</button>
+        <div id="palette"></div>
     </div>
 
-
-    <div id="palette"></div>
-
-    <script src="script.js"></script>
+    <script src="./js/util.js"></script>
+    <script src="./js/script.js"></script>
 </body>
 <footer>
     Copyright (C) 2025 RiSE4.
