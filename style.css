@@ -92,6 +92,22 @@ canvas:hover {
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
 }
 
+#hueWrapper {
+    position: relative;
+    width: 300px;
+    margin-bottom: 20px;
+}
+
+#hueIndicator {
+    position: absolute;
+    top: 0;
+    width: 2px;
+    height: 30px;
+    background: black;
+    pointer-events: none;
+    transform: translateX(-1px);
+}
+
 /* ---- Picked Color ---- */
 #pickedColor {
     display: flex;
