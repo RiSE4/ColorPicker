@@ -1,25 +1,5 @@
-# COLOR PICKER
-以下のリンクから、自由に使用することができます。<br>
-https://rise4.github.io/ColorPicker/
-<br><br>
-Chromium系ブラウザに対応しています。一応スマホでも動きます。
-# できること
-* キャンバスから取得した色をパレットに追加し、HSV/RGB/HEX の値を取得
-* １２種類の色サンプルから、色相 > 彩度 > 明度の優先順位で、ランダムな色を生成
-* ブラウザのlocalStorageに登録したパレットを保存
-* RGB/HSV/HEXの値をクリップボードにコピー
+# Vue 3 + Vite
 
-## 🔎近い色を結合
-HSVの値をLab色空間に変換し、色差（LAB ΔE）を精査することで近い色を結合することができます。
-しきい値（ΔE）が低いほど色の差が小さくなり、高いほど差が大きくなります。
-一般的に人が認識できる範囲の色を残したい場合は5~15を推奨しています。
+This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
 
-## 🎯スポイト
-画面上に存在する色をピクセル単位で取得し、カラーパレットに追加することができます。
-
-## 🎨パレットを並び替え
-色差の距離が近い順番で追加したパレットを並び替えることができます。
-色相に準拠しているわけではなく、あくまでも色差の距離を元に計算するため、HSVのカラーバー通りには並べることはできません。
-
-## 🧹パレットをクリア
-localStorageに保存されたパレットを一括で削除することができます。
+Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
