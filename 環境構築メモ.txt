@@ -1,0 +1,88 @@
+【Vite + Vue メモ】
+
+●環境構築
+- npm create vite@latest
+
+任意のフォルダ名, 任意のパッケージ名, Vue, JavaScript, いらない の順番で画面に従う
+VoltaでNode.jsとNPMのバージョンを管理したいので、node_modulesを削除する
+
+packages.jsonに以下を追加する
+
+  "volta": {
+    "node": "24.11.1",
+    "npm": "11.6.2"
+  }
+
+- npm i でnode_modulesを再インストール
+- npm run dev で起動すればOK
+
+●GitHub pagesの設定
+
+vite.config.jsに以下を追加する
+
+export default defineConfig({
+  plugins: [vue()],
+  base: '/ColorPicker/',   ← GitHubのリポジトリ名を追加する
+})
+
+.gitignoreの以下を確認する
+
+node_modules/
+dist/              ←「/」がない場合はデプロイに失敗するので追加しておくこと
+
+
+.github\workflowsに 「deploy.yml」を定義する
+
+======================================================================================
+
+name: Deploy Vue app to GitHub Pages
+
+on:
+    push:
+        branches: ["vue"]　　← デプロイ元ソースのリポジトリ名を書く
+
+permissions:
+    contents: read
+    pages: write
+    id-token: write
+
+jobs:
+    # Single deploy job since we're just deploying
+    deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v5
+
+            - name: Set up Node
+              uses: actions/setup-node@v6
+              with:
+                  node-version: lts/*　　　← Voltaで管理してるバージョンと合わせた方がいいかも
+                  cache: "npm"
+
+            - name: Install dependencies
+              run: npm install
+
+            - name: Build
+              run: npm run build
+
+            - name: Setup Pages
+              uses: actions/configure-pages@v5
+
+            - name: Upload artifact
+              uses: actions/upload-pages-artifact@v4
+              with:
+                  # Upload dist folder
+                  path: "./dist"
+
+            - name: Deploy to GitHub Pages
+              id: deployment
+              uses: actions/deploy-pages@v4
+
+======================================================================================
+
+GitHubのリポジトリ → Settings → Pages → Build and deployment > Sourceを「GitHub Actions」にする
+
+リモートにプッシュしたら後はGitHubが勝手にビルド、デプロイしてくれる
+
