@@ -13,9 +13,11 @@ const count = ref(0)
 
   <div class="card">
     <button type="button" @click="count++">count is {{ count }}</button>
-    <p>
-      Vue による実装に対応中のため、現在利用できません。
-    </p>
+    <div class="text-3xl font-bold text-blue-500">
+      <p>
+        Vue による実装に対応中のため、現在利用できません。
+      </p>
+    </div>
   </div>
 
 </template>

@@ -16,6 +16,26 @@ packages.jsonに以下を追加する
 - npm i でnode_modulesを再インストール
 - npm run dev で起動すればOK
 
+
+●TailwindCSS v4 のインストール
+
+前提としてViteのプラグインを使用するので、PostCSSやAutoPrefixerは必要ない。
+
+- npm install tailwindcss @tailwindcss/vite
+
+vite.config.jsに以下を追加する
+
+import tailwindcss from '@tailwindcss/vite'
+
+plugins: [vue(), tailwindcss()],
+
+最上階のディレクトリの～.cssに以下を追加する
+
+　　@import "tailwindcss";
+
+TailwindCSSのテストをして、スタイルが反映されていればOK
+
+
 ●GitHub pagesの設定
 
 vite.config.jsに以下を追加する
