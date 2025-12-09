@@ -1,4 +1,5 @@
 <script setup>
+import DarkMode from './components/DarkMode.vue';
 import HelloWorld from './components/HelloWorld.vue'
 </script>
 
@@ -12,6 +13,8 @@ import HelloWorld from './components/HelloWorld.vue'
     </a>
   </div>
   <HelloWorld msg="Vite + Vue" />
+
+  <DarkMode />
 </template>
 
 <style scoped>

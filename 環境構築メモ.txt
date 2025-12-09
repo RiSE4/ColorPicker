@@ -21,34 +21,42 @@ packages.jsonに以下を追加する
 
 前提としてViteのプラグインを使用するので、PostCSSやAutoPrefixerは必要ない。
 
-- npm install tailwindcss @tailwindcss/vite
+    - npm install tailwindcss @tailwindcss/vite
 
 vite.config.jsに以下を追加する
 
-import tailwindcss from '@tailwindcss/vite'
+    import tailwindcss from '@tailwindcss/vite'
 
-plugins: [vue(), tailwindcss()],
+    plugins: [vue(), tailwindcss()],
 
 最上階のディレクトリの～.cssに以下を追加する
 
-　　@import "tailwindcss";
+    @import "tailwindcss";
 
 TailwindCSSのテストをして、スタイルが反映されていればOK
+
+★ダークモードを設定する場合）
+v4かつViteのプラグインのものを使用するため、configの設定などはいらない。
+style.cssに以下の文を追加する。
+
+    @custom-variant dark (&:where(.dark, .dark *));
+
+参考資料： https://tailwindcss.com/docs/dark-mode#toggling-dark-mode-manually
 
 
 ●GitHub pagesの設定
 
 vite.config.jsに以下を追加する
 
-export default defineConfig({
-  plugins: [vue()],
-  base: '/ColorPicker/',   ← GitHubのリポジトリ名を追加する
-})
+  export default defineConfig({
+    plugins: [vue()],
+   base: '/ColorPicker/',　　　　← GitHubのリポジトリ名を追加する
+  })
 
 .gitignoreの以下を確認する
 
-node_modules/
-dist/              ←「/」がない場合はデプロイに失敗するので追加しておくこと
+   node_modules/
+    dist/　　　　　　　←「/」がない場合はデプロイに失敗する（リモートに無駄なソースを渡してしまう）ので追加しておくこと
 
 
 .github\workflowsに 「deploy.yml」を定義する
@@ -59,7 +67,7 @@ name: Deploy Vue app to GitHub Pages
 
 on:
     push:
-        branches: ["vue"]　　← デプロイ元ソースのリポジトリ名を書く
+        branches: ["vue"]　　← デプロイ元ソースのブランチ名を書く
 
 permissions:
     contents: read
