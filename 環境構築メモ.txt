@@ -110,7 +110,14 @@ jobs:
 
 ======================================================================================
 
+
 GitHubのリポジトリ → Settings → Pages → Build and deployment > Sourceを「GitHub Actions」にする
 
 リモートにプッシュしたら後はGitHubが勝手にビルド、デプロイしてくれる
 
+
+vue → rot
+/assets cssやpngなどの静的リソースを保管
+/components Vueのコンポーネントを保管　基本的.vueしか置か無い　サブディレクトリの対応は可能
+/composables Vueにマウントしたいデータを保存するJSのかん酢などを保管
+/utils 関数内で計算毛かを完結できるJSを保存　ここにある関数はVueにマウントすることができ無い
