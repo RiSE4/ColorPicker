@@ -1,10 +1,102 @@
-@import "tailwindcss";
+:root {
+  font-family: 'Noto Sans JP', sans-serif;
+  color-scheme: light;
+  --background: #f9f9f9;
+  --surface: #fff;
+  --text: #222;
+  --muted: #555;
+  --border: #ccc;
+  --green: #258323;
+  --error: #bc3027;
+  --palette-copied-background: #e8fbe9;
+  --palette-copied-text: #222;
+}
 
-/* Dark mode variant（Tailwind v4） */
-@custom-variant dark (&:where(.dark, .dark *));
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --background: #181b20;
+  --surface: #252a32;
+  --text: #f0f1f3;
+  --muted: #c0c5cf;
+  --border: #606874;
+  --green: #287c27;
+  --error: #ff8d85;
+  --palette-copied-background: #203d2b;
+  --palette-copied-text: #f0f1f3;
+}
 
-/* Canvas pointer */
-.pointer {
-  @apply absolute w-3 h-3 rounded-full border-2 border-white pointer-events-none;
-  transform: translate(-6px, -6px);
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--text);
+}
+
+#app {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+header,
+main {
+  width: min(100%, 1320px);
+  margin-inline: auto;
+  padding-inline: 30px;
+}
+
+header {
+  padding-top: 30px;
+}
+
+main {
+  padding-bottom: 30px;
+}
+
+button,
+input {
+  font: inherit;
+  border-radius: 6px;
+}
+
+button {
+  cursor: pointer;
+  border: 0;
+  min-height: 44px;
+}
+
+button:hover {
+  filter: brightness(1.08);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+input {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  min-height: 44px;
+}
+
+:focus-visible {
+  outline: 3px solid #508fdd;
+  outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+
+  header,
+  main {
+    padding-inline: 16px;
+  }
+
+  header {
+    padding-top: 20px;
+  }
 }

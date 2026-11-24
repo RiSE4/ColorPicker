@@ -1,22 +1,37 @@
 <!doctype html>
-<html lang="en">
+<html lang="ja">
 
 <head>
   <meta charset="UTF-8">
   <meta name="google-site-verification" content="_GHOVPxu58Tc4M5mr3nB_G_zxcSgSvCcmGFtCgU1B88" />
   <meta name="description" content="フロントエンジニア向けの高機能なカラーピッカーです。デザインの検討をする際に便利な機能を提供します。" />
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet" />
+  <meta name="color-scheme" content="light dark" />
+  <style>
+    html {
+      background: #f9f9f9;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      html {
+        background: #181b20;
+      }
+    }
+
+    html:has(body) {
+      background: var(--background);
+    }
+  </style>
   <title>Color Picker</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 
 <body>
   <div id="app"></div>
-  <script type="module" src="/src/main.js"></script>
+  <script type="module" src="/src/main.ts"></script>
 </body>
-<footer>
-    Copyright (C) 2025 RiSE4.
-    Reference at GitHub repository <a href="https://github.com/RiSE4/ColorPicker" target="_blank">here</a>.
-</footer>
 
 </html>
