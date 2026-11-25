@@ -1,8 +1,9 @@
 /**
- * Vue・DOM非依存の公開API。ディレクトリ単位で別プロジェクトへ取り込める。
- * RGB: 0–255、HSV: h=0–360 / s,v=0–1、XYZ: D65 / Y=1。
- * 例: deltaE(rgbToLab(hexToRgb('#FF0000')), rgbToLab(hexToRgb('#FE0101')))
- * mainと同じCIE76を使用し、LAB変換の中間値を丸めない。
+ * 色処理ライブラリの公開インターフェース（Barrel File）
+ * 各モジュールの関数および型定義を集約し、外部モジュールへ公開
+ * 
+ * @example
+ * import { hexToRgb, rgbToLab, deltaE } from '@/lib/color'
  */
 export type { RGB, HSV, XYZ, Lab } from './types'
 export { clamp, normalizeHex, hexToRgb, rgbToHex, rgbToHsv, hsvToRgb } from './conversion'

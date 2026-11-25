@@ -7,9 +7,6 @@ import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
   plugins: [vue()],
-  /**
-   * 既存のGitHub Pages公開URLを維持する。
-   */
   base: '/ColorPicker/',
   resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
 })

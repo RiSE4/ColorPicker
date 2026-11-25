@@ -1,10 +1,10 @@
 <script setup lang="ts">
 /**
- * 追加・コピー用ボタン。iconは通常時の名前、feedbackは成功/失敗とフェード状態を指定する。クリックは親へ引き渡す。
+ * 追加・コピーボタン
  */
+
 import type { FeedbackState } from '@/composables/useFeedback'
 import FontAwesomeIcon from './FontAwesomeIcon.vue'
-
 defineProps<{ icon: string; feedback?: FeedbackState }>()
 </script>
 
@@ -17,7 +17,6 @@ defineProps<{ icon: string; feedback?: FeedbackState }>()
 </template>
 
 <style scoped>
-/* 本番の追加・コピー・エラー演出。文字メッセージは表示しない。 */
 .feedback-button {
   width: 40px;
   padding: 4px;

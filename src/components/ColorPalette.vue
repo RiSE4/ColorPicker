@@ -1,7 +1,8 @@
 <script setup lang="ts">
 /**
- * HEX配列を表示し、選択・削除イベントを通知する。コピー成功状態で枠と上方ラベルを1秒間表示する。
+ * カラーパレット
  */
+
 import FontAwesomeIcon from '@/components/FontAwesomeIcon.vue'
 import type { Feedback } from '@/composables/useFeedback'
 defineProps<{ colors: readonly string[]; feedback: Feedback }>()
@@ -15,6 +16,7 @@ defineEmits<{ select: [hex: string]; remove: [hex: string] }>()
       <button class="color-sample" :style="{ backgroundColor: hex }" :aria-label="`${hex}を選択してコピー`"
         @click="$emit('select', hex)" />
       <span class="hex-label">{{ hex }}</span>
+
       <button class="delete-btn" :aria-label="`${hex}を削除`" @click="$emit('remove', hex)">
         <FontAwesomeIcon name="fa-xmark" />
       </button>
@@ -31,7 +33,6 @@ defineEmits<{ select: [hex: string]; remove: [hex: string] }>()
   margin-top: 20px;
 }
 
-/* テーマの背景色・境界色は即時反映し、コピー時の影だけアニメーションする。 */
 .color-box {
   width: 100px;
   height: 100px;
@@ -78,7 +79,6 @@ defineEmits<{ select: [hex: string]; remove: [hex: string] }>()
   color: var(--palette-copied-text);
 }
 
-/* 本番と同じくコピー成功時の1秒間だけ、上方へ浮かぶラベルを表示する。 */
 .copied-label {
   position: absolute;
   top: -20px;

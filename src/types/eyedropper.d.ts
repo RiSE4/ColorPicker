@@ -1,11 +1,15 @@
 /**
- * DOM標準型に含まれないEyeDropper APIの最小限の型宣言。対応していないWindowも許容する。
+ * EyeDropper APIの型宣言
  */
-/** スポイトが取得したsRGBのHEX値。利用時には形式を検証する。 */
+
+/** スポイトが取得したsRGBのHEX */
 interface EyeDropperResult { sRGBHex: string }
-/** openで選択を開始し、AbortSignalで中断できるブラウザ提供オブジェクト。 */
+
+/** ブラウザが提供するEyeDropper APIのオブジェクト */
 interface EyeDropper { open(options?: { signal?: AbortSignal }): Promise<EyeDropperResult> }
-/** ユーザー操作から生成するEyeDropperのコンストラクター。 */
+
+/** コンストラクター */
 interface EyeDropperConstructor { new(): EyeDropper }
-/** 非対応環境ではEyeDropperが存在しないため、省略可能として宣言する。 */
+
+/** 非対応環境用に、省略可能として宣言 */
 interface Window { EyeDropper?: EyeDropperConstructor }

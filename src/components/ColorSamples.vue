@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * 0–330度を30度刻みに並べた12色相のボタン。generateイベントで選択色相を親へ通知する。
+ * カラーサンプルのボタン
  */
 defineEmits<{ generate: [hue: number] }>()
 const hues = Array.from({ length: 12 }, (_, i) => i * 30)

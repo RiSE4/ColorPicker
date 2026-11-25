@@ -1,7 +1,8 @@
 <script setup lang="ts">
 /**
- * しきい値入力と4つの操作ボタン。merge・pick・sort・clearを親へ通知し、picking中はスポイトを無効化する。
+ * しきい値の入力フォームと各種操作ボタン
  */
+
 import { ref } from 'vue'
 defineProps<{ picking: boolean }>()
 defineEmits<{ merge: [threshold: number]; pick: []; sort: []; clear: [] }>()
@@ -14,6 +15,7 @@ const threshold = ref<number | string>(7)
       <label for="threshold">しきい値 (ΔE):</label>
       <input id="threshold" v-model="threshold" type="number" min="1" step="any" aria-label="しきい値 (ΔE)">
     </div>
+
     <div class="button-row">
       <button id="killPaletteBtn" @click="$emit('merge', Number(threshold))">🔎近い色を結合</button>
       <button id="dropperBtn" :disabled="picking" @click="$emit('pick')">🎯スポイト</button>
